@@ -1,4 +1,5 @@
 # securesphere
+This is a demo project used to manage user signup and login using AWS Cognito and AWS Lambda.Our main application can be behind this layer.
 
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
 
