@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  securesphere
+
+  Sample SAM Template for securesphere
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 20
+    Runtime: java17
+    Architectures:
+      - x86_64
+    MemorySize: 512
+    Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          MY_COGNITO_POOL_APP_CLIENT_ID: AQICAHgdbwGpT0vJF0qW5+Wx51OHauoGdLigDuLvT8eAfpnCYgE0AcAvoiV8/5Irq3p7APk4AAAAeTB3BgkqhkiG9w0BBwagajBoAgEAMGMGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMAHngycd5+PHumkTLAgEQgDbtCDX8XI1ygV3qgxjdfgz8rW56vUtgHmgSdSgq98xueCVwAXu+hYMjTYHV93AU/b/QE43xzDE=
+          MY_COGNITO_POOL_APP_CLIENT_SECRET: AQICAHgdbwGpT0vJF0qW5+Wx51OHauoGdLigDuLvT8eAfpnCYgGJlIodoU8ndlGnce++zbI1AAAAlTCBkgYJKoZIhvcNAQcGoIGEMIGBAgEAMHwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMlwAs/zS0rNhBbdf+AgEQgE/1FuyQzYrjzd8kBmLpwrDTdKeFbRwpHPxU+RImsT+YopngWtSuNLMlXF6iUpsb4fhZw9k8LtQ2q8zW5ih/tQSKEuXd/Yf7a0Rv0EIPC8It
+          MY_COGNITO_USERS_POOL_ID: AQICAHgdbwGpT0vJF0qW5+Wx51OHauoGdLigDuLvT8eAfpnCYgEW116quGRRA5i4CCnqWVwwAAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMLdwj9aPK7f48YxqSAgEQgC96im1ONOaqOAGKa+Yo05WZLL56NRUqgcgKPeBfK9fAF9cONDPofsoqaJcwOq9mjg==
+          DB_USERNAME: AQICAHgdbwGpT0vJF0qW5+Wx51OHauoGdLigDuLvT8eAfpnCYgFzsNJBAvjNtJlfc6GCZ07PAAAAZDBiBgkqhkiG9w0BBwagVTBTAgEAME4GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMfQ/WtrCE9DydinW9AgEQgCHNhf6KOh3w5kLXCTcAOANvcLkUphNBJ5L3bPiBc8hybDg=
+          DB_PASSWORD: AQICAHgdbwGpT0vJF0qW5+Wx51OHauoGdLigDuLvT8eAfpnCYgEQwrzxonEbgUDgSmPHB/fbAAAAdTBzBgkqhkiG9w0BBwagZjBkAgEAMF8GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMXhT7e6tHHsYVVIyfAgEQgDIg2Vf9RVnULsc8CemdUGaJXofbZTEzodD4XA3oT2p5fuonrO9Tlj7DygGRAJSLSRqKWQ==
+          DB_URL: AQICAHgdbwGpT0vJF0qW5+Wx51OHauoGdLigDuLvT8eAfpnCYgH3323z0yBWnUHjmn55PFQHAAAAojCBnwYJKoZIhvcNAQcGoIGRMIGOAgEAMIGIBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDHC+wkTDe4BaQ50jFwIBEIBbyEWtrpN2QUc7TbUDXowIWvmqtJWUA8czyEx6Hd/e7iEGnIpN0MXorvh0/PAf3PYF3iqJkPcLsFt09Ea6vY10EnLrvqJ9k8UtlNMgd8xRfoMgS2O3ZeatM3XhjA==
+          DB_PORT: AQICAHgdbwGpT0vJF0qW5+Wx51OHauoGdLigDuLvT8eAfpnCYgElBBUkh4pRImNIK4eMKh89AAAAYzBhBgkqhkiG9w0BBwagVDBSAgEAME0GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM916gXGVY1Dyoh3zZAgEQgCDRmctCuikVBQtxUYIwnVi5pUT0t3SZPvA2P7qKwivKKg==
+          DB_NAME: AQICAHgdbwGpT0vJF0qW5+Wx51OHauoGdLigDuLvT8eAfpnCYgF5ly1eobq3XC/zSyRWmahPAAAAbTBrBgkqhkiG9w0BBwagXjBcAgEAMFcGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMQ6Z0HV74r/PaDs9TAgEQgCp1yDBTz+QyHi5iPVNGn3QMrPNJkeBag5O5dnamzm7Y/Tkb5kiVNqvsMLI=
+Resources:
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: open-api.yaml
+  CreateUserHandlerFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: SecureSphereAPI
+      Handler: com.securesphere.securesphereapi.CreateUserHandler::handleRequest
+      Events:
+        CreateUser:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /users
+            Method: post
+            RestApiId:
+              Ref: MyApi
+#  ConfirmUserHandlerFunction:
+#    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+#    Properties:
+#      CodeUri: SecureSphereAPI
+#      Handler: com.securesphere.securesphereapi.ConfirmUserHandler::handleRequest
+#      Events:
+#        ConfirmUser:
+#          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+#          Properties:
+#            Path: /confirm
+#            Method: post
+#            RestApiId:
+#              Ref: MyApi
+  LoginUserHandlerFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: SecureSphereAPI
+      Handler: com.securesphere.securesphereapi.LoginUserHandler::handleRequest
+      Events:
+        LoginUser:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /login
+            Method: post
+            RestApiId:
+              Ref: MyApi
+#  GetUserHandlerFunction:
+#    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+#    Properties:
+#      CodeUri: SecureSphereAPI
+#      Handler: com.securesphere.securesphereapi.GetUserHandler::handleRequest
+#      Events:
+#        GetUser:
+#          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+#          Properties:
+#            Path: /users/me
+#            Method: get
+#            RestApiId:
+#              Ref: MyApi
+  CognitoTriggerHandlerFunction: #referred doc -> https://github.com/aws/serverless-application-model/blob/master/versions/2016-10-31.md#resource-types
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: SecureSphereAPI
+      Handler: com.securesphere.securesphereapi.CognitoTriggerHandler::handleRequest
+      #Events:
+        #CognitoConfirmUserTrigger:
+          #Type: Cognito # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          #Properties:
+            #UserPool: !Ref UserPoolName #During stack deployment, we can provide the Cognito User Pool Name as a parameter value
+            #Trigger: PostConfirmation
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  CreateUserApi:
+    Description: "API Gateway endpoint URL for Prod stage for CreateUserHandler Function"
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  CreateUserHandlerFunction:
+    Description: "CreateUserHandlerFunction Lambda Function ARN"
+    Value: !GetAtt CreateUserHandlerFunction.Arn
+  CreateUserHandlerFunctionIamRole:
+    Description: "Implicit IAM Role created for CreateUserHandler"
+    Value: !GetAtt CreateUserHandlerFunction.Arn

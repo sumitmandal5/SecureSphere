@@ -1,0 +1,150 @@
+openapi: "3.0.1"
+info:
+  title: "SecureSphereAPICognitoStack"
+  version: "1.0"
+servers:
+- url: "https://l6wsho25xk.execute-api.eu-west-2.amazonaws.com/{basePath}"
+  variables:
+    basePath:
+      default: "Prod"
+paths:
+  /login:
+    post:
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:981714115215:function:SecureSphereAPICognitoSta-LoginUserHandlerFunction-ib94KWGeZN1F/invocations"
+        responses:
+          default:
+            statusCode: "200"
+        passthroughBehavior: "when_no_match"
+        contentHandling: "CONVERT_TO_TEXT"
+    options:
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
+        type: "mock"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+  /users:
+    post:
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:981714115215:function:SecureSphereAPICognitoSta-CreateUserHandlerFunctio-2SaRIAMQKpSF/invocations"
+        passthroughBehavior: "when_no_match"
+    options:
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
+        type: "mock"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+  /users/me:
+    get:
+      parameters:
+      - name: "AccessToken"
+        in: "header"
+        required: true
+        schema:
+          type: "string"
+      security:
+      - SecureSphereAPIAuthorizer: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:981714115215:function:SecureSphereAPICognitoStack-GetUserHandlerFunction-HXzfX6QF0Gfb/invocations"
+        passthroughBehavior: "when_no_match"
+  /confirm:
+    post:
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:981714115215:function:SecureSphereAPICognitoSta-ConfirmUserHandlerFuncti-DqwavlUDIfaV/invocations"
+        passthroughBehavior: "when_no_match"
+components:
+  securitySchemes:
+    SecureSphereAPIAuthorizer:
+      type: "apiKey"
+      name: "Authorization"
+      in: "header"
+      x-amazon-apigateway-authtype: "cognito_user_pools"
+      x-amazon-apigateway-authorizer:
+        type: "cognito_user_pools"
+        providerARNs:
+        - "arn:aws:cognito-idp:eu-west-2:981714115215:userpool/eu-west-2_mGF0guWNx"
+x-amazon-apigateway-gateway-responses:
+  DEFAULT_4XX:
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+      gatewayresponse.header.Access-Control-Expose-Headers: "'idToken,accessToken'"
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+      gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+  DEFAULT_5XX:
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+      gatewayresponse.header.Access-Control-Expose-Headers: "'idToken,accessToken'"
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+      gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+x-amazon-apigateway-request-validators:
+  Validate query string parameters and headers:
+    validateRequestParameters: true
+    validateRequestBody: false
